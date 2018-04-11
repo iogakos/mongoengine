@@ -17,7 +17,7 @@ from mongoengine import (
 from mongoengine.python_support import IS_PYMONGO_3
 import mongoengine.connection
 from mongoengine.connection import (MongoEngineConnectionError, get_db,
-                                    get_connection)
+                                    get_connection, DEFAULT_CONNECTION_NAME)
 
 
 def get_tz_awareness(connection):
@@ -247,6 +247,19 @@ class ConnectionTest(unittest.TestCase):
 
         # Clear all users
         authd_conn.admin.system.users.remove({})
+
+    def test_connect_defaults(self):
+        """Ensure that defaults are used when no alias is given
+        """
+        register_connection(
+            DEFAULT_CONNECTION_NAME,
+            db='mongoenginetest',
+            host='mongomock://user:pass@localhost1/mongoenginetest')
+
+        conn = connect(db='mongoenginetest')
+
+        exp_address = ('mongodb://user:pass@localhost1/mongoenginetest', 27017)
+        self.assertEqual(conn.address, exp_address)
 
     def test_register_connection(self):
         """Ensure that connections with different aliases may be registered.

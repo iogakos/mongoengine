@@ -253,7 +253,7 @@ def connect(db=None, alias=DEFAULT_CONNECTION_NAME, **kwargs):
 
     .. versionchanged:: 0.6 - added multiple database support.
     """
-    if alias not in _connections:
+    if alias not in _connection_settings:
         register_connection(alias, db, **kwargs)
 
     return get_connection(alias)
